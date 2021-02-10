@@ -1,5 +1,6 @@
 import { EventEmitter } from 'events';
 import { readFile } from 'fs';
+import { nextTick } from 'process';
 
 class FindRegex extends EventEmitter {
   #regex;
@@ -18,7 +19,8 @@ class FindRegex extends EventEmitter {
   }
 
   find() {
-    this.emit('start', this.#files);
+    nextTick(() => this.emit('start', this.#files));
+
     this.#files.forEach((file) => {
       readFile(file, 'utf8', (err, content) => {
         if (err) {
@@ -32,6 +34,7 @@ class FindRegex extends EventEmitter {
         match.forEach((e) => this.emit('match', file, e));
       });
     });
+
     return this;
   }
 }
