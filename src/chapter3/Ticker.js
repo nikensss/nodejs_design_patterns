@@ -32,13 +32,11 @@ class Ticker extends EventEmitter {
     setImmediate(() => this.tick());
 
     const recursiveTick = () => {
-      if (end < Date.now()) {
-        setImmediate(() => this.#cb(null, this.#ticks));
-        return;
-      }
-
-      if (end - Date.now() < 50) {
-        setTimeout(() => this.#cb(null, this.#ticks), end - Date.now());
+      if (end <= Date.now()) {
+        setTimeout(
+          () => this.#cb(null, this.#ticks),
+          Math.min(Math.abs(end - Date.now()), 50)
+        );
         return;
       }
 

@@ -16,11 +16,12 @@ findRegex
 
 createTicker(201, (err, ticks) => {
   if (err) {
-    console.error(`In callback: ${err}`);
+    console.error(`In callback:   ${err}`);
+    return;
   }
   console.log(`Done! Ticked a total amount of ${ticks} times`);
 })
   .on('tick', () => console.log('Ticked!'))
-  .on('error', (error) => console.error(`Error emmitted: ${error}`));
+  .on('error', (error) => console.error(`Error emitted: ${error}`));
 
 console.log('Done!');
