@@ -31,7 +31,7 @@ class FindRegex extends EventEmitter {
         this.emit('fileread', file);
         const match = content.match(this.#regex);
         if (!match) return;
-        match.forEach((e) => this.emit('match', file, e));
+        match.forEach((e) => this.emit('find', file, e));
       });
     });
 
