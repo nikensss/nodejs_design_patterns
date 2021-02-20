@@ -13,6 +13,11 @@ class FindRegex extends EventEmitter {
     this.#files = [];
   }
 
+  addFiles(files) {
+    this.#files.push(...files);
+    return this;
+  }
+
   addFile(file) {
     this.#files.push(file);
     return this;
@@ -21,7 +26,7 @@ class FindRegex extends EventEmitter {
   find() {
     nextTick(() => this.emit('start', this.#files));
 
-    this.#files.forEach((file) => {
+    this.#files.forEach((file, index, files) => {
       readFile(file, 'utf8', (err, content) => {
         if (err) {
           this.emit('error', err);
@@ -30,8 +35,10 @@ class FindRegex extends EventEmitter {
 
         this.emit('fileread', file);
         const match = content.match(this.#regex);
-        if (!match) return;
-        match.forEach((e) => this.emit('find', file, e));
+        if (match) {
+          match.forEach((e) => this.emit('find', file, e));
+        }
+        if (index === files.length - 1) this.emit('done');
       });
     });
 
