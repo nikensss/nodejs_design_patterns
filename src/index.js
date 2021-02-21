@@ -4,7 +4,9 @@
 // import concatFiles from './chapter4/file_concatenation.js';
 // import listNestedFiles from './chapter4/list_nested_files.js';
 
-import recursiveFind from './chapter4/recursive_find.js';
+import recursiveFind, {
+  recursiveFindConcurrent
+} from './chapter4/recursive_find.js';
 
 // console.log('Starting!');
 // const findRegex = new FindRegex(/her/g);
@@ -63,10 +65,20 @@ import recursiveFind from './chapter4/recursive_find.js';
 // });
 
 recursiveFind('src', 'her', (err, files) => {
-  if (err) return console.error(err);
+  if (err) {
+    console.error(err);
+    return;
+  }
 
-  console.log(`Files containing "her": \n${files.join('\n')}`);
-  return 1;
+  console.log(`[CPS] Files containing "her": \n${files.join('\n')}`);
 });
 
+recursiveFindConcurrent('src', 'her', (err, files) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+
+  console.log(`[Concurrent] Files containing "her": \n${files.join('\n')}`);
+});
 console.log('Done!');
