@@ -13,9 +13,7 @@ export default class TaskQueueProducerConsumer {
     // eslint-disable-next-line no-constant-condition
     while (true) {
       try {
-        // eslint-disable-next-line no-await-in-loop
         const task = await this.getNextTask();
-        // eslint-disable-next-line no-await-in-loop
         await task();
       } catch (ex) {
         console.error(ex);
@@ -24,7 +22,6 @@ export default class TaskQueueProducerConsumer {
   }
 
   async getNextTask() {
-    // eslint-disable-next-line consistent-return
     return new Promise((res) => {
       if (this.taskQueue.length !== 0) {
         return res(this.taskQueue.shift());
