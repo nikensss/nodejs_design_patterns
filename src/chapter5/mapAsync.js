@@ -1,6 +1,5 @@
-export const mapAsync = async (array, callback, concurrency) => {
+export const mapAsync = async (array, callback, concurrency = 4) => {
   if (array.length === 0) return array;
-  const result = [];
   const taskQueue = [];
   const consumerQueue = [];
 
@@ -10,6 +9,7 @@ export const mapAsync = async (array, callback, concurrency) => {
       const task = await getNextTask();
       console.log(`[${id}] Task received!`);
       await task();
+      console.log(`[${id}]Task finished!`);
     } catch (ex) {
       console.error(ex);
     } finally {
@@ -30,6 +30,10 @@ export const mapAsync = async (array, callback, concurrency) => {
     return new Promise((res, rej) => {
       const wrapper = () => Promise.resolve(task()).then(res, rej);
 
+      // if a 'thread' is sleeping, there will be a 'resolve' method in the
+      // 'consumerQueue' that we can call to resolve to a new task, so
+      // 'getNextTask' finally resolves and the 'consumer' method moves on after
+      // the 'await'
       if (consumerQueue.length !== 0) {
         const consumer = consumerQueue.shift();
         return consumer(wrapper);
@@ -42,25 +46,11 @@ export const mapAsync = async (array, callback, concurrency) => {
     consumer(index);
   }
 
-  const promises = [];
-  for (let index = 0; index < array.length; index++) {
-    ((i) =>
-      promises.push(
-        enqueueTask(() => callback(array[index], index, array))
-          .then((res) => {
-            console.log(`Assigning ${res} to element ${i}`);
-            result[i] = res;
-          })
-          .catch((ex) => {
-            console.log(`Promise rejected: ${ex}`);
-            result[i] = null;
-          })
-      ))(index);
-  }
+  const promises = array.map((e, i, a) =>
+    enqueueTask(() => callback(e, i, a)).catch(() => null)
+  );
 
-  await Promise.all(promises);
-
-  return result;
+  return await Promise.all(promises);
 };
 
 const data = [1, 2, 3, 4, 5];
@@ -75,8 +65,8 @@ const cb = function (n) {
         res(r);
       },
       647,
-      n + 0.1
+      n * 2
     );
   });
 };
-mapAsync(data, cb, 2).then((r) => console.log({ r }));
+mapAsync(data, cb, 3).then((r) => console.log({ r }));
