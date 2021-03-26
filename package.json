@@ -27,6 +27,7 @@
     "@babel/preset-env": "^7.12.13",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
+    "@types/mkdirp-promise": "^5.0.0",
     "babel": "^6.23.0",
     "eslint": "^7.19.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -42,6 +43,7 @@
     }
   },
   "dependencies": {
-    "chance": "^1.1.7"
+    "chance": "^1.1.7",
+    "mkdirp-promise": "^5.0.1"
   }
 }
