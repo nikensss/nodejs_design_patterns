@@ -12,7 +12,7 @@ export class ReplaceStream extends Transform {
   _transform(chunk, encoding, cb) {
     const pieces = `${this.tail}${chunk}`.split(this.searchStr);
     const lastPiece = pieces.pop();
-    const tailLen = this.searchStr.length;
+    const tailLen = this.searchStr.length - 1;
     this.tail = lastPiece.slice(-tailLen);
     tails.push({ tail: this.tail });
     pieces.push(lastPiece.slice(0, -tailLen));
@@ -33,4 +33,31 @@ replaceStream.write('Hello Wo');
 replaceStream.write('rld!');
 replaceStream.end();
 replaceStream.pipe(process.stdout);
+console.log({ tails });
+tails.length = 0;
+
+const searchStr = 'World';
+const replaceStr = 'NodeJS';
+let tail = '';
+const simplifiedReplaceStream = new Transform({
+  transform(chunk, encoding, cb) {
+    const pieces = `${tail}${chunk}`.split(searchStr);
+    const lastPiece = pieces.pop();
+    const tailLen = searchStr.length - 1;
+    tail = lastPiece.slice(-tailLen);
+    tails.push({ tail: tail });
+    pieces.push(lastPiece.slice(0, -tailLen));
+    this.push(pieces.join(replaceStr));
+    cb();
+  },
+  flush(cb) {
+    this.push(tail);
+    cb();
+  }
+});
+
+simplifiedReplaceStream.write('Hello Wo');
+simplifiedReplaceStream.write('rld!');
+simplifiedReplaceStream.end();
+simplifiedReplaceStream.pipe(process.stdout);
 console.log({ tails });
