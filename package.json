@@ -24,6 +24,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "^7.12.13",
     "@babel/plugin-proposal-class-properties": "^7.12.13",
+    "@babel/plugin-syntax-top-level-await": "^7.12.13",
     "@babel/preset-env": "^7.12.13",
     "@commitlint/cli": "^11.0.0",
     "@commitlint/config-conventional": "^11.0.0",
@@ -45,6 +46,7 @@
   "dependencies": {
     "chance": "^1.1.7",
     "csv-parse": "^4.15.3",
-    "mkdirp-promise": "^5.0.1"
+    "mkdirp-promise": "^5.0.1",
+    "split": "^1.0.1"
   }
 }

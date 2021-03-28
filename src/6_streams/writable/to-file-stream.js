@@ -32,7 +32,7 @@ const tfsSimplified = new Writable({
       .catch(done);
   }
 });
-tfsSimplified.write({ path: join('files-s', 'file1.txt'), content: 'Hello' });
-tfsSimplified.write({ path: join('files-s', 'file2.txt'), content: 'NodeJS' });
-tfsSimplified.write({ path: join('files-s', 'file3.txt'), content: 'streams' });
+tfsSimplified.write({ path: join('files-s', 'file1.txt'), content: 'Goodbye' });
+tfsSimplified.write({ path: join('files-s', 'file2.txt'), content: 'Mr Mime' });
+tfsSimplified.write({ path: join('files-s', 'file3.txt'), content: 'Mind' });
 tfsSimplified.end(() => console.log('All files created!'));

@@ -4,7 +4,6 @@ import Chance from 'chance';
 const chance = new Chance();
 const server = createServer((req, res) => {
   setImmediate(() => console.log('next tick'));
-  res.on('finish', () => console.log('All data sent!'));
   process.nextTick(() => console.log('end of first tick'));
 
   res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -13,6 +12,10 @@ const server = createServer((req, res) => {
   }
   process.nextTick(() => console.log('second next tick callback registered'));
   res.end('\n\n');
+  // we attach listeners to the 'finish' event even after finishing the stream
+  // because the first 'data' event will always be emitted in the next stage of
+  // the event loop
+  res.on('finish', () => console.log('All data sent!'));
 });
 
 server.listen(8080, () => {
@@ -24,8 +27,8 @@ const backPressuredServer = createServer((req, res) => {
   function generateMore() {
     while (chance.bool({ likelihood: 95 })) {
       const randomChunk = chance.string({ length: 16 * 1024 - 1 });
-      const shouldContinue = res.write(`${randomChunk}\n`);
-      if (!shouldContinue) {
+      const canContinue = res.write(`${randomChunk}\n`);
+      if (!canContinue) {
         console.log('back-pressure!');
         return res.once('drain', generateMore);
       }
