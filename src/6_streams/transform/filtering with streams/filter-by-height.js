@@ -10,6 +10,6 @@ export class FilterByHeight extends Transform {
     if (parseFloat(chunk.Height) > this.height) {
       this.push(chunk);
     }
-    done();
+    done(); // indicates we can process another chunk
   }
 }
